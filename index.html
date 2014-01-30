@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html ng-app="vocabularyDrillApp">
+<head>
+<meta http-equiv="content-type" value="text/html; charset=UTF-8">
+<script type="text/javascript" src="angular.min.js"></script>
+<script type="text/javascript" src="angular-resource.js"></script>
+<script type="text/javascript" src="vocabularydrill.js"></script>
+<style type="text/css">
+body {
+    font-family: sans-serif;
+}
+.card {
+    display: block;
+    width: 400px;
+    height: 60px;
+    padding: 10px 10px;
+    font-size: 120%;
+    text-align: center;
+    background-color: #ffff00;
+}
+.card.answer {
+    background-color: #44cc44;
+}
+ul {
+    list-style-type: none;
+}
+ul li {
+    float: left;
+    padding: 5px;
+    margin: 10px;
+    margin-right: 5em;
+    background-color: #dddddd;
+    font-size: 90%;
+}
+ul li a {
+    text-decoration: none;
+}
+li.current {
+    background-color: #44cc44;
+}
+</style>
+</head>
+<body>
+    <div ng-controller="FlashCardCtrl">
+        <div class="card" ng-class="{answer: !showingQuestion}" ng-click="pressedWord()">{{ word[show] }}</div>
+    </div>
+    <div ng-controller="VocabularyCtrl">
+        <ul>
+            <li ng-class="{current: currentSection == section}" ng-repeat="(section, words) in vocabulary"><a href="#" ng-click="selectSection(section, words)">{{ section }}</a></li>
+        </ul>
+    </div>
+</body>
+</html>
