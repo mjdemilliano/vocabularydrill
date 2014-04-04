@@ -1,4 +1,4 @@
-var vocabularyDrillApp = angular.module('vocabularyDrillApp', ['vocabularyServices']);
+var vocabularyDrillApp = angular.module('vocabularyDrillApp', ['vocabularyServices', 'ngFitText']);
 var DELAY_ADVANCE = 1000;
 
 vocabularyDrillApp.controller('VocabularyCtrl', ['$rootScope', '$scope', 'Vocabulary',
@@ -27,6 +27,8 @@ vocabularyDrillApp.controller('FlashCardCtrl', ['$rootScope', '$scope', '$timeou
             $scope.showingQuestion = true;
             $scope.word = $scope.words[index];
             $scope.question = Math.random() < 0.5 ? 0 : 1;
+            $scope.show = $scope.question;
+            $scope.$broadcast('changedword', $scope.word[$scope.show]);
         };
 
         $scope.pressedWord = function() {
@@ -34,6 +36,7 @@ vocabularyDrillApp.controller('FlashCardCtrl', ['$rootScope', '$scope', '$timeou
                 // Show answer.
                 $scope.showingQuestion = false;
                 $scope.show = 1 - $scope.show;
+                $scope.$broadcast('changedword', $scope.word[$scope.show]);
                 $timeout(function() {
                     $scope.newQuestion();
                 }, DELAY_ADVANCE);
@@ -57,4 +60,3 @@ vocabularyServices.factory('Vocabulary', ['$resource',
         });
     }
 ]);
-
