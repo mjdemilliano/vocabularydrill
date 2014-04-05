@@ -22,6 +22,9 @@ vocabularyDrillApp.controller('FlashCardCtrl', ['$rootScope', '$scope', '$timeou
         $scope.show = 0;
         $scope.showingQuestion = true;
 
+        $scope.hasWord = function() {
+            return $scope.word.length > 0;
+        };
         $scope.newQuestion = function() {
             var index = Math.floor(Math.random() * $scope.words.length);
             $scope.showingQuestion = true;
@@ -36,10 +39,8 @@ vocabularyDrillApp.controller('FlashCardCtrl', ['$rootScope', '$scope', '$timeou
                 // Show answer.
                 $scope.showingQuestion = false;
                 $scope.show = 1 - $scope.show;
-                $scope.$broadcast('changedword', $scope.word[$scope.show]);
-                $timeout(function() {
-                    $scope.newQuestion();
-                }, DELAY_ADVANCE);
+                $rootScope.$broadcast('changedword', $scope.word[$scope.show]);
+                $rootScope.$broadcast('showinganswer', $scope.word[$scope.show]);
             }
         };
 
@@ -47,6 +48,25 @@ vocabularyDrillApp.controller('FlashCardCtrl', ['$rootScope', '$scope', '$timeou
             $scope.section = section;
             $scope.words = words;
             $scope.newQuestion();
+        });
+
+        $rootScope.$on('need-new-question', function(event) {
+            $scope.newQuestion();
+        });
+    }
+]);
+
+vocabularyDrillApp.controller('FeedbackCtrl', ['$rootScope', '$scope',
+    function FeedbackCtrl($rootScope, $scope) {
+        $scope.word = undefined;
+        $scope.enabled = false;
+        $scope.feedback = function(wasCorrect) {
+            $scope.enabled = false;
+            $rootScope.$broadcast('need-new-question');
+        };
+        $rootScope.$on('showinganswer', function(event, word) {
+            $scope.word = word;
+            $scope.enabled = true;
         });
     }
 ]);

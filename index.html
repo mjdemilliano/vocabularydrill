@@ -20,9 +20,31 @@ body {
     padding: 10px 0px 10px 0px;
     text-align: center;
     background-color: #ffff00;
+    opacity: 0.1;
 }
 .card.answer {
     background-color: #44cc44;
+}
+.card.enabled {
+    opacity: 1.0;
+}
+.feedback-button {
+    display: block;
+    float: left;
+    width: calc(50% - 20px);
+    margin: 10px;
+    padding: 20px 0px;
+    text-align: center;
+    opacity: 0.1;
+}
+.feedback-button.feedback-wrong {
+    background-color: #ff0000;
+}
+.feedback-button.feedback-correct {
+    background-color: #00ff00;
+}
+.feedback-button.enabled {
+    opacity: 1.0;
 }
 ul {
     list-style-type: none;
@@ -41,11 +63,16 @@ ul li a {
 li.current {
     background-color: #44cc44;
 }
+
 </style>
 </head>
 <body>
     <div ng-controller="FlashCardCtrl">
-        <div class="card" data-fittext="0.6" data-fittext-min="10" data-fittext-max="80" ng-class="{answer: !showingQuestion}" ng-click="pressedWord()">{{ word[show] }}</div>
+        <div class="card" data-fittext="0.6" data-fittext-min="10" data-fittext-max="80" ng-class="{answer: !showingQuestion, enabled: hasWord()}" ng-click="pressedWord()">{{ word[show] }}</div>
+    </div>
+    <div ng-controller="FeedbackCtrl">
+        <div class="feedback-button feedback-wrong" ng-class="{enabled: enabled}" ng-click="feedback(false)">Wrong</div>
+        <div class="feedback-button feedback-correct" ng-class="{enabled: enabled}" ng-click="feedback(true)">Correct</div>
     </div>
     <div ng-controller="VocabularyCtrl">
         <ul>
