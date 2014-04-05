@@ -68,11 +68,11 @@ li.current {
 </head>
 <body>
     <div ng-controller="FlashCardCtrl">
-        <div class="card" data-fittext="0.6" data-fittext-min="10" data-fittext-max="80" ng-class="{answer: !showingQuestion, enabled: hasWord()}" ng-click="pressedWord()">{{ word[show] }}</div>
+        <div class="card" data-fittext="0.6" data-fittext-min="10" data-fittext-max="80" ng-class="{answer: !showingQuestion, enabled: hasWord()}" ng-click="hasWord() ? pressedWord() : false">{{ word[show] }}</div>
     </div>
     <div ng-controller="FeedbackCtrl">
-        <div class="feedback-button feedback-wrong" ng-class="{enabled: enabled}" ng-click="feedback(false)">Wrong</div>
-        <div class="feedback-button feedback-correct" ng-class="{enabled: enabled}" ng-click="feedback(true)">Correct</div>
+        <div class="feedback-button feedback-wrong" ng-class="{enabled: enabled}" ng-click="enabled ? feedback(false) : false">Wrong</div>
+        <div class="feedback-button feedback-correct" ng-class="{enabled: enabled}" ng-click="enabled ? feedback(true) : false">Correct</div>
     </div>
     <div ng-controller="VocabularyCtrl">
         <ul>

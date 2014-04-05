@@ -23,7 +23,7 @@ vocabularyDrillApp.controller('FlashCardCtrl', ['$rootScope', '$scope', '$timeou
         $scope.showingQuestion = true;
 
         $scope.hasWord = function() {
-            return $scope.word.length > 0;
+            return $scope.word !== undefined && $scope.word.length > 0;
         };
         $scope.newQuestion = function() {
             var index = Math.floor(Math.random() * $scope.words.length);
@@ -63,6 +63,11 @@ vocabularyDrillApp.controller('FeedbackCtrl', ['$rootScope', '$scope',
         $scope.feedback = function(wasCorrect) {
             $scope.enabled = false;
             $rootScope.$broadcast('need-new-question');
+            $scope.recordFeedback($scope.word, wasCorrect);
+        }
+        $scope.recordFeedback = function(word, wasCorrect) {
+            var now = new Date();
+            localStorage.setItem('vocabulary.feedback.' + now.getTime(), JSON.stringify({word: word, wasCorrect: wasCorrect}));
         };
         $rootScope.$on('showinganswer', function(event, word) {
             $scope.word = word;
