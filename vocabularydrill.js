@@ -67,11 +67,32 @@ vocabularyDrillApp.controller('FeedbackCtrl', ['$rootScope', '$scope',
         }
         $scope.recordFeedback = function(word, wasCorrect) {
             var now = new Date();
-            localStorage.setItem('vocabulary.feedback.' + now.getTime(), JSON.stringify({word: word, wasCorrect: wasCorrect}));
+            localStorage.setItem('vocabulary.feedback.' + now.getTime(), JSON.stringify({time: now, word: word, wasCorrect: wasCorrect}));
         };
         $rootScope.$on('showinganswer', function(event, word) {
             $scope.word = word;
             $scope.enabled = true;
+        });
+    }
+]);
+
+vocabularyDrillApp.controller('WordStatusCtrl', ['$scope', 'Feedback',
+    function WordStatusCtrl($scope, Feedback) {
+        // TODO: get list of all words in section.
+        var wordsInSection = [];
+        $scope.wordStatus = wordsInSection.map(function(word) {
+            var historyForWord = Feedback.historyForWord(word);
+            return {
+                word: word,
+                correct: historyForWord.filter(
+                    function(item) {
+                        return item.wasCorrect;
+                    }).length,
+                wrong: historyForWord.filter(
+                    function(item) {
+                        return !item.wasCorrect;
+                    }).length
+            }
         });
     }
 ]);
@@ -85,3 +106,31 @@ vocabularyServices.factory('Vocabulary', ['$resource',
         });
     }
 ]);
+vocabularyServices.factory('Feedback',
+    function() {
+        var history = (function() {
+            var historyItems = [];
+            return {
+                get: function() {
+                    if (historyItems.length === 0) {
+                        // Read history from localstorage.
+                        for (item in localStorage) {
+                            if (/^vocabulary\.feedback\./.test(item)) {
+                                historyItems.push(JSON.parse(localStorage[item]));
+                            }
+                        }
+                    }
+                    return historyItems;
+                }
+            };
+        })();
+        return {
+            historyForWord: function(word) {
+                return history.get().filter(function(item) {
+                    return item.word === word;
+                });
+            }
+        };
+    }
+);
+

@@ -46,10 +46,11 @@ body {
 .feedback-button.enabled {
     opacity: 1.0;
 }
-ul {
+.sections ul {
     list-style-type: none;
+    clear: both;
 }
-ul li {
+.sections ul li {
     float: left;
     padding: 5px;
     margin: 10px;
@@ -57,10 +58,10 @@ ul li {
     background-color: #dddddd;
     font-size: 90%;
 }
-ul li a {
+.sections ul li a {
     text-decoration: none;
 }
-li.current {
+.sections li.current {
     background-color: #44cc44;
 }
 
@@ -74,9 +75,14 @@ li.current {
         <div class="feedback-button feedback-wrong" ng-class="{enabled: enabled}" ng-click="enabled ? feedback(false) : false">Wrong</div>
         <div class="feedback-button feedback-correct" ng-class="{enabled: enabled}" ng-click="enabled ? feedback(true) : false">Correct</div>
     </div>
-    <div ng-controller="VocabularyCtrl">
+    <div ng-controller="VocabularyCtrl" class="sections">
         <ul>
             <li ng-class="{current: currentSection == section}" ng-repeat="(section, words) in vocabulary"><a href="#" ng-click="selectSection(section, words)">{{ section }}</a></li>
+        </ul>
+    </div>
+    <div ng-controller="WordStatusCtrl">
+        <ul style="clear: both;">
+            <li ng-repeat="word in wordStatus">{{ word.word }}, correct = {{ word.correct }}, wrong = {{ word.wrong }}</li>
         </ul>
     </div>
 </body>
