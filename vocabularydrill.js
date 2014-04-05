@@ -43,8 +43,8 @@ vocabularyDrillApp.controller('VocabularyCtrl', ['$scope', 'Vocabulary',
     }
 ]);
 
-vocabularyDrillApp.controller('FlashCardCtrl', ['$rootScope', '$scope', '$timeout',
-    function FlashCardCtrl($rootScope, $scope, $timeout) {
+vocabularyDrillApp.controller('FlashCardCtrl', ['$scope', '$timeout',
+    function FlashCardCtrl($scope, $timeout) {
         $scope.word = [];
         $scope.question = 0;
         $scope.show = 0;
@@ -86,8 +86,8 @@ vocabularyDrillApp.controller('FlashCardCtrl', ['$rootScope', '$scope', '$timeou
     }
 ]);
 
-vocabularyDrillApp.controller('FeedbackCtrl', ['$rootScope', '$scope', 'Feedback',
-    function FeedbackCtrl($rootScope, $scope, Feedback) {
+vocabularyDrillApp.controller('FeedbackCtrl', ['$scope', 'Feedback',
+    function FeedbackCtrl($scope, Feedback) {
         $scope.enabled = false;
         $scope.feedback = function(wasCorrect) {
             $scope.enabled = false;
