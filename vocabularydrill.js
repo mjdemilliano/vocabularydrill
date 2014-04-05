@@ -1,22 +1,50 @@
 var vocabularyDrillApp = angular.module('vocabularyDrillApp', ['vocabularyServices', 'ngFitText']);
 var DELAY_ADVANCE = 1000;
 
-vocabularyDrillApp.controller('VocabularyCtrl', ['$rootScope', '$scope', 'Vocabulary',
-    function($rootScope, $scope, Vocabulary) {
-        $scope.vocabulary = Vocabulary.query();
+vocabularyDrillApp.controller('SessionCtrl', ['$scope',
+    function($scope) {
         $scope.currentSection = '';
+        $scope.words = [];
+        $scope.selectedWord = '';   // Selected word in the foreign language.
+        $scope.showingAnswer = false;
 
-        $scope.selectSection = function(section, words) {
+        // Note: have to use a method here, because in a direct assignment only the local scope gets changed.
+        $scope.setWords = function(words) {
+            $scope.words = words;
+        }
+
+        $scope.setSelectedWord = function(word) {
+            $scope.selectedWord = word;
+        };
+
+        $scope.needNewQuestion = function() {
+            $scope.$broadcast('need-new-question');
+        };
+
+        $scope.setShowingAnswer = function(showingAnswer) {
+            $scope.showingAnswer = showingAnswer;
+        };
+
+        $scope.$on('feedback-recorded', function() {
+            $scope.$broadcast('need-new-question');
+        });
+    }
+]);
+
+vocabularyDrillApp.controller('VocabularyCtrl', ['$scope', 'Vocabulary',
+    function($scope, Vocabulary) {
+        $scope.vocabulary = Vocabulary.query();
+
+        $scope.selectSection = function(section) {
             $scope.currentSection = section;
-            $rootScope.$broadcast('selectedSection', section, words);
+            // Note: have to use a method here, because in a direct assignment only the local scope gets changed.
+            $scope.setWords($scope.vocabulary[section]);
         };
     }
 ]);
 
 vocabularyDrillApp.controller('FlashCardCtrl', ['$rootScope', '$scope', '$timeout',
     function FlashCardCtrl($rootScope, $scope, $timeout) {
-        $scope.section = '';
-        $scope.words = [];
         $scope.word = [];
         $scope.question = 0;
         $scope.show = 0;
@@ -28,9 +56,11 @@ vocabularyDrillApp.controller('FlashCardCtrl', ['$rootScope', '$scope', '$timeou
         $scope.newQuestion = function() {
             var index = Math.floor(Math.random() * $scope.words.length);
             $scope.showingQuestion = true;
+            $scope.setShowingAnswer(false);
             $scope.word = $scope.words[index];
             $scope.question = Math.random() < 0.5 ? 0 : 1;
             $scope.show = $scope.question;
+            $scope.setSelectedWord($scope.word[0]); // 0: foreign language.
             $scope.$broadcast('changedword', $scope.word[$scope.show]);
         };
 
@@ -39,18 +69,18 @@ vocabularyDrillApp.controller('FlashCardCtrl', ['$rootScope', '$scope', '$timeou
                 // Show answer.
                 $scope.showingQuestion = false;
                 $scope.show = 1 - $scope.show;
-                $rootScope.$broadcast('changedword', $scope.word[$scope.show]);
-                $rootScope.$broadcast('showinganswer', $scope.word[$scope.show]);
+                $scope.$emit('changedword', $scope.word[$scope.show]);
+                $scope.setShowingAnswer(true);
             }
         };
 
-        $rootScope.$on('selectedSection', function(event, section, words) {
-            $scope.section = section;
-            $scope.words = words;
-            $scope.newQuestion();
+        $scope.$watch('words', function() {
+            if ($scope.words.length > 0) {
+                $scope.newQuestion();
+            }
         });
 
-        $rootScope.$on('need-new-question', function(event) {
+        $scope.$on('need-new-question', function(event) {
             $scope.newQuestion();
         });
     }
@@ -58,41 +88,44 @@ vocabularyDrillApp.controller('FlashCardCtrl', ['$rootScope', '$scope', '$timeou
 
 vocabularyDrillApp.controller('FeedbackCtrl', ['$rootScope', '$scope',
     function FeedbackCtrl($rootScope, $scope) {
-        $scope.word = undefined;
         $scope.enabled = false;
         $scope.feedback = function(wasCorrect) {
             $scope.enabled = false;
-            $rootScope.$broadcast('need-new-question');
-            $scope.recordFeedback($scope.word, wasCorrect);
+            $scope.$emit('feedback-recorded');
+            $scope.recordFeedback($scope.selectedWord, wasCorrect);
         }
         $scope.recordFeedback = function(word, wasCorrect) {
             var now = new Date();
             localStorage.setItem('vocabulary.feedback.' + now.getTime(), JSON.stringify({time: now, word: word, wasCorrect: wasCorrect}));
         };
-        $rootScope.$on('showinganswer', function(event, word) {
-            $scope.word = word;
-            $scope.enabled = true;
+        $scope.$watch('showingAnswer', function(showingAnswer) {
+            if (showingAnswer) {
+                $scope.enabled = true;
+            }
         });
     }
 ]);
 
 vocabularyDrillApp.controller('WordStatusCtrl', ['$scope', 'Feedback',
     function WordStatusCtrl($scope, Feedback) {
-        // TODO: get list of all words in section.
-        var wordsInSection = [];
-        $scope.wordStatus = wordsInSection.map(function(word) {
-            var historyForWord = Feedback.historyForWord(word);
-            return {
-                word: word,
-                correct: historyForWord.filter(
-                    function(item) {
-                        return item.wasCorrect;
-                    }).length,
-                wrong: historyForWord.filter(
-                    function(item) {
-                        return !item.wasCorrect;
-                    }).length
-            }
+        $scope.wordStatus = [];
+
+        $scope.$watch('words', function() {
+            $scope.wordStatus = $scope.words.map(function(word) {
+                // word is a 2-tuple
+                var historyForWord = Feedback.historyForWord(word[0]);
+                return {
+                    word: word[0],
+                    correct: historyForWord.filter(
+                        function(item) {
+                            return item.wasCorrect;
+                        }).length,
+                    wrong: historyForWord.filter(
+                        function(item) {
+                            return !item.wasCorrect;
+                        }).length
+                }
+            });
         });
     }
 ]);
@@ -106,6 +139,7 @@ vocabularyServices.factory('Vocabulary', ['$resource',
         });
     }
 ]);
+
 vocabularyServices.factory('Feedback',
     function() {
         var history = (function() {

@@ -64,10 +64,12 @@ body {
 .sections li.current {
     background-color: #44cc44;
 }
-
+table thead th {
+    text-align: left;
+}
 </style>
 </head>
-<body>
+<body ng-controller="SessionCtrl">
     <div ng-controller="FlashCardCtrl">
         <div class="card" data-fittext="0.6" data-fittext-min="10" data-fittext-max="80" ng-class="{answer: !showingQuestion, enabled: hasWord()}" ng-click="hasWord() ? pressedWord() : false">{{ word[show] }}</div>
     </div>
@@ -77,13 +79,18 @@ body {
     </div>
     <div ng-controller="VocabularyCtrl" class="sections">
         <ul>
-            <li ng-class="{current: currentSection == section}" ng-repeat="(section, words) in vocabulary"><a href="#" ng-click="selectSection(section, words)">{{ section }}</a></li>
+            <li ng-class="{current: currentSection === section}" ng-repeat="(section, words) in vocabulary"><a href="#" ng-click="selectSection(section)">{{ section }}</a></li>
         </ul>
     </div>
     <div ng-controller="WordStatusCtrl">
-        <ul style="clear: both;">
-            <li ng-repeat="word in wordStatus">{{ word.word }}, correct = {{ word.correct }}, wrong = {{ word.wrong }}</li>
-        </ul>
+        <table style="clear: both;" ng-if="wordStatus.length > 0">
+            <thead>
+                <tr><th>Word</th><th># correct</th><th># wrong</th></tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="word in wordStatus"><td>{{ word.word }}</td><td>{{ word.correct }}</td><td>{{ word.wrong }}</td></tr>
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
