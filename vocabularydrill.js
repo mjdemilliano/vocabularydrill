@@ -86,18 +86,14 @@ vocabularyDrillApp.controller('FlashCardCtrl', ['$rootScope', '$scope', '$timeou
     }
 ]);
 
-vocabularyDrillApp.controller('FeedbackCtrl', ['$rootScope', '$scope',
-    function FeedbackCtrl($rootScope, $scope) {
+vocabularyDrillApp.controller('FeedbackCtrl', ['$rootScope', '$scope', 'Feedback',
+    function FeedbackCtrl($rootScope, $scope, Feedback) {
         $scope.enabled = false;
         $scope.feedback = function(wasCorrect) {
             $scope.enabled = false;
             $scope.$emit('feedback-recorded');
-            $scope.recordFeedback($scope.selectedWord, wasCorrect);
+            Feedback.recordFeedback($scope.selectedWord, wasCorrect);
         }
-        $scope.recordFeedback = function(word, wasCorrect) {
-            var now = new Date();
-            localStorage.setItem('vocabulary.feedback.' + now.getTime(), JSON.stringify({time: now, word: word, wasCorrect: wasCorrect}));
-        };
         $scope.$watch('showingAnswer', function(showingAnswer) {
             if (showingAnswer) {
                 $scope.enabled = true;
@@ -158,12 +154,17 @@ vocabularyServices.factory('Feedback',
                 }
             };
         })();
+        var historyForWord = function(word) {
+            return history.get().filter(function(item) {
+                return item.word === word;
+            });
+        };
         return {
-            historyForWord: function(word) {
-                return history.get().filter(function(item) {
-                    return item.word === word;
-                });
-            }
+            recordFeedback: function(word, wasCorrect) {
+                var now = new Date();
+                localStorage.setItem('vocabulary.feedback.' + now.getTime(), JSON.stringify({time: now, word: word, wasCorrect: wasCorrect}));
+            },
+            historyForWord: historyForWord
         };
     }
 );
