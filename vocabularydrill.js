@@ -1,8 +1,8 @@
 var vocabularyDrillApp = angular.module('vocabularyDrillApp', ['vocabularyServices', 'ngFitText']);
 var DELAY_ADVANCE = 1000;
 
-vocabularyDrillApp.controller('SessionCtrl', ['$scope',
-    function($scope) {
+vocabularyDrillApp.controller('SessionCtrl', ['$scope', 'Feedback',
+    function($scope, Feedback) {
         $scope.currentSection = '';
         $scope.words = [];
         $scope.selectedWord = '';   // Selected word in the foreign language.
@@ -10,7 +10,22 @@ vocabularyDrillApp.controller('SessionCtrl', ['$scope',
 
         // Note: have to use a method here, because in a direct assignment only the local scope gets changed.
         $scope.setWords = function(words) {
-            $scope.words = words;
+            // Assign words array, but first get history of each word.
+            $scope.words = words.map(function(word) {
+                // word is a 2-tuple
+                var historyForWord = Feedback.historyForWord(word[0]);
+                return {
+                    word: word,
+                    correct: historyForWord.filter(
+                        function(item) {
+                            return item.wasCorrect;
+                        }).length,
+                    wrong: historyForWord.filter(
+                        function(item) {
+                            return !item.wasCorrect;
+                        }).length
+                }
+            });
         }
 
         $scope.setSelectedWord = function(word) {
@@ -57,7 +72,7 @@ vocabularyDrillApp.controller('FlashCardCtrl', ['$scope', '$timeout',
             var index = Math.floor(Math.random() * $scope.words.length);
             $scope.showingQuestion = true;
             $scope.setShowingAnswer(false);
-            $scope.word = $scope.words[index];
+            $scope.word = $scope.words[index].word;
             $scope.question = Math.random() < 0.5 ? 0 : 1;
             $scope.show = $scope.question;
             $scope.setSelectedWord($scope.word[0]); // 0: foreign language.
@@ -98,30 +113,6 @@ vocabularyDrillApp.controller('FeedbackCtrl', ['$scope', 'Feedback',
             if (showingAnswer) {
                 $scope.enabled = true;
             }
-        });
-    }
-]);
-
-vocabularyDrillApp.controller('WordStatusCtrl', ['$scope', 'Feedback',
-    function WordStatusCtrl($scope, Feedback) {
-        $scope.wordStatus = [];
-
-        $scope.$watch('words', function() {
-            $scope.wordStatus = $scope.words.map(function(word) {
-                // word is a 2-tuple
-                var historyForWord = Feedback.historyForWord(word[0]);
-                return {
-                    word: word[0],
-                    correct: historyForWord.filter(
-                        function(item) {
-                            return item.wasCorrect;
-                        }).length,
-                    wrong: historyForWord.filter(
-                        function(item) {
-                            return !item.wasCorrect;
-                        }).length
-                }
-            });
         });
     }
 ]);

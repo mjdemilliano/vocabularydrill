@@ -83,13 +83,13 @@ table thead th {
             <li ng-class="{current: currentSection === section}" ng-repeat="(section, words) in vocabulary"><a href="#" ng-click="selectSection(section)">{{ section }}</a></li>
         </ul>
     </div>
-    <div ng-controller="WordStatusCtrl">
-        <table style="clear: both;" ng-if="wordStatus.length > 0">
+    <div>
+        <table style="clear: both;" ng-if="words.length > 0">
             <thead>
                 <tr><th>Word</th><th># correct</th><th># wrong</th></tr>
             </thead>
             <tbody>
-                <tr ng-repeat="word in wordStatus"><td>{{ word.word }}</td><td>{{ word.correct }}</td><td>{{ word.wrong }}</td></tr>
+                <tr ng-repeat="word in words"><td>{{ word.word[0] }}</td><td>{{ word.correct }}</td><td>{{ word.wrong }}</td></tr>
             </tbody>
         </table>
     </div>
