@@ -72,7 +72,7 @@ table thead th {
 </head>
 <body ng-controller="SessionCtrl">
     <div ng-controller="FlashCardCtrl">
-        <div class="card" data-fittext="0.6" data-fittext-min="10" data-fittext-max="80" ng-class="{answer: !showingQuestion, enabled: hasWord()}" ng-click="hasWord() ? pressedWord() : false">{{ word[show] }}</div>
+        <div class="card" data-fittext="0.6" data-fittext-min="10" data-fittext-max="80" ng-class="{answer: !showingQuestion, enabled: hasWord()}" ng-click="hasWord() ? pressedWord() : false">{{ word.word[show] }}</div>
     </div>
     <div ng-controller="FeedbackCtrl">
         <div class="feedback-button feedback-wrong" ng-class="{enabled: enabled}" ng-click="enabled ? feedback(false) : false">Wrong</div>
@@ -86,10 +86,10 @@ table thead th {
     <div>
         <table style="clear: both;" ng-if="words.length > 0">
             <thead>
-                <tr><th>Word</th><th># correct</th><th># wrong</th></tr>
+                <tr><th>Word</th><th># correct</th><th># wrong</th><th>Selection probability</th></tr>
             </thead>
             <tbody>
-                <tr ng-repeat="word in words"><td>{{ word.word[0] }}</td><td>{{ word.correct }}</td><td>{{ word.wrong }}</td></tr>
+                <tr ng-repeat="word in words"><td>{{ word.word[0] }}</td><td>{{ word.correct }}</td><td>{{ word.wrong }}</td><td>{{ word.pdf }}</td></tr>
             </tbody>
         </table>
     </div>
