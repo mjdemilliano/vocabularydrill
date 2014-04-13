@@ -89,7 +89,7 @@ table thead th {
                 <tr><th>Word</th><th># correct</th><th># wrong</th><th>Selection probability</th></tr>
             </thead>
             <tbody>
-                <tr ng-repeat="word in words"><td>{{ word.word[0] }}</td><td>{{ word.correct }}</td><td>{{ word.wrong }}</td><td>{{ word.pdf }}</td></tr>
+                <tr ng-repeat="word in words | orderBy:'-selectionProbability'"><td>{{ word.word[0] }}</td><td>{{ word.correct }}</td><td>{{ word.wrong }}</td><td>{{ word.selectionProbability }}</td></tr>
             </tbody>
         </table>
     </div>
