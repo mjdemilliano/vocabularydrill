@@ -137,7 +137,6 @@ vocabularyDrillApp.controller('FeedbackCtrl', ['$scope', 'Feedback',
         $scope.enabled = false;
         $scope.feedback = function(wasCorrect) {
             $scope.enabled = false;
-            $scope.$emit('feedback-recorded');
             Feedback.recordFeedback($scope.word.word[0], wasCorrect);
             if (wasCorrect) {
                 $scope.word.correct += 1;
@@ -145,6 +144,7 @@ vocabularyDrillApp.controller('FeedbackCtrl', ['$scope', 'Feedback',
                 $scope.word.wrong += 1;
             }
             $scope.updateProbabilities();
+            $scope.$emit('feedback-recorded');
         }
         $scope.$watch('showingAnswer', function(showingAnswer) {
             if (showingAnswer) {
