@@ -33,7 +33,9 @@ vocabularyDrillApp.controller('SessionCtrl', ['$scope', 'Feedback',
             // Compute selection probability, which is equal to the ratio of wrong vs correct, but it is 1 if no attempt has been made yet for this word.
             $scope.words.map(function(word) {
                 var totalAttempts = word.wrong + word.correct;
-                word.selectionProbability = totalAttempts > 0 ? (word.wrong / (word.wrong + word.correct) + 0.1) : 1;   // 0.1: always a small chance of selecting this word.
+                word.selectionProbability = totalAttempts > 3 ? (word.wrong / (word.wrong + word.correct) + 0.1) : 1;   
+                        // 3: if not asked 3 times then high chance of selecting, only from that point on do we take into account the number of wrong/correct.
+                        // 0.1: always a small chance of selecting this word.
             });
             // Normalize PDF by summing all values...
             var probabilitySum = $scope.words.map(function(word) {
