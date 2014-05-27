@@ -1,4 +1,4 @@
-var vocabularyDrillApp = angular.module('vocabularyDrillApp', ['vocabularyServices', 'ngFitText']);
+var vocabularyDrillApp = angular.module('vocabularyDrillApp', ['vocabularyServices', 'ngFitText', 'dangle']);
 var DELAY_ADVANCE = 1000;
 
 vocabularyDrillApp.controller('SessionCtrl', ['$scope', 'Feedback',
@@ -7,6 +7,7 @@ vocabularyDrillApp.controller('SessionCtrl', ['$scope', 'Feedback',
         $scope.words = [];
         $scope.word = undefined;
         $scope.showingAnswer = false;
+        $scope.results = undefined;
 
         // Note: have to use a method here, because in a direct assignment only the local scope gets changed.
         $scope.setWords = function(words) {
@@ -27,6 +28,20 @@ vocabularyDrillApp.controller('SessionCtrl', ['$scope', 'Feedback',
                 }
             });
             $scope.updateProbabilities();
+            $scope.updateFacets();
+        };
+
+        $scope.updateFacets = function() {
+            $scope.results = {
+                facets: {
+                    SelectionProbability: {
+                        _type: 'terms',
+                        terms: $scope.words.map(function(word) {
+                            return {term: word.word[0], count: word.selectionProbability };
+                        })
+                    }
+                }
+            };
         };
 
         $scope.updateProbabilities = function() {
@@ -146,6 +161,7 @@ vocabularyDrillApp.controller('FeedbackCtrl', ['$scope', 'Feedback',
                 $scope.word.wrong += 1;
             }
             $scope.updateProbabilities();
+            $scope.updateFacets();
             $scope.$emit('feedback-recorded');
         }
         $scope.$watch('showingAnswer', function(showingAnswer) {
