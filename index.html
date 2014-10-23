@@ -23,6 +23,7 @@ body {
     text-align: center;
     background-color: #ffff00;
     opacity: 0.1;
+    font-size: 38pt;
 }
 .card.answer {
     background-color: #44cc44;
@@ -74,7 +75,7 @@ table thead th {
 </head>
 <body ng-controller="SessionCtrl">
     <div ng-controller="FlashCardCtrl">
-        <div class="card" data-fittext="0.6" data-fittext-min="10" data-fittext-max="80" ng-class="{answer: !showingQuestion, enabled: hasWord()}" ng-click="hasWord() ? pressedWord() : false">{{ word.word[show] }}</div>
+        <div class="card" ng-class="{answer: !showingQuestion, enabled: hasWord()}" ng-click="hasWord() ? pressedWord() : false">{{ word.word[show] }}</div>
     </div>
     <div ng-controller="FeedbackCtrl">
         <div class="feedback-button feedback-wrong" ng-class="{enabled: enabled}" ng-click="enabled ? feedback(false) : false">Wrong</div>
