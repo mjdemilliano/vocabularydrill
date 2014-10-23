@@ -32,14 +32,14 @@ class VocabularyReader(object):
     def saveAsJSON(self, fileObject):
         json.dump(self.vocabulary, fileObject)
 
+def generateJSONForODSFile(odsFile, outputFilePointer):
+    reader = VocabularyReader(odsFile)
+    reader.saveAsJSON(outputFilePointer)
+    
 def main():
     odsFile = sys.argv[1]
     outputFile = sys.argv[2] if len(sys.argv) > 2 else None
-
-    reader = VocabularyReader(odsFile)
-
     outputFilePointer = open(outputFile, 'w') if outputFile else sys.stdout
-    reader.saveAsJSON(outputFilePointer)
 
 if __name__ == '__main__':
     main()
