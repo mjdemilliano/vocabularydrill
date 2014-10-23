@@ -94,6 +94,7 @@ vocabularyDrillApp.controller('VocabularyCtrl', ['$scope', 'Vocabulary',
             $scope.currentSection = section;
             // Note: have to use a method here, because in a direct assignment only the local scope gets changed.
             $scope.setWords($scope.vocabulary[section]);
+            $('aside').removeClass('expanded');
         };
     }
 ]);

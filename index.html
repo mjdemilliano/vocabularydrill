@@ -12,7 +12,7 @@
 <style type="text/css">
 body {
     font-family: sans-serif;
-    font-size: 120%;
+    font-size: 110%;
 }
 .card {
     display: block;
@@ -50,23 +50,52 @@ body {
 .feedback-button.enabled {
     opacity: 1.0;
 }
-.sections ul {
-    list-style-type: none;
-    clear: both;
+aside {
+	width: 200px;
+	padding: 0;
+	position: absolute;
+	left: -150px;
+	top: 0px;
+	transition: 1s;
 }
-.sections ul li {
-    float: left;
-    padding: 5px;
-    margin: 10px;
-    margin-right: 5em;
-    background-color: #dddddd;
-    font-size: 90%;
+aside.expanded {
+	transition: 1s;
+	left: 0;
 }
-.sections ul li a {
+aside a {
+	display: inline-block;
+	width: calc(100% - 70px);
+	color: #980000;
+	padding: 0.3em;
+	padding-left: 0.6em;
+	border-bottom: 0.5px solid #980000;
     text-decoration: none;
+    position: relative;
+    left: 0;
+    top: 0;
+    cursor: hand;
 }
-.sections li.current {
-    background-color: #44cc44;
+aside a.current, aside a:hover {
+    background-color: #980000;
+    color: #ffffff;
+    transition: 1s;
+}
+.menutoggle {
+	width: 20px;
+	height: 20px;
+	background: #980000;
+	color: #ffffff;
+	padding: 15px;
+	position: absolute;
+	left: 150px;
+}
+main {
+	margin-top: 40px;
+}
+body:after {
+	content: "";
+	dipslay: table;
+	clear: both;
 }
 table thead th {
     text-align: left;
@@ -74,17 +103,17 @@ table thead th {
 </style>
 </head>
 <body ng-controller="SessionCtrl">
+    <aside ng-controller="VocabularyCtrl">
+    	<a href="#" class="menutoggle">&lt;</a>
+		<a ng-class="{current: currentSection === section}" ng-repeat="(section, words) in vocabulary" href="#" ng-click="selectSection(section)">{{ section }}</a>
+    </aside>
+    <main>
     <div ng-controller="FlashCardCtrl">
         <div class="card" ng-class="{answer: !showingQuestion, enabled: hasWord()}" ng-click="hasWord() ? pressedWord() : false">{{ word.word[show] }}</div>
     </div>
     <div ng-controller="FeedbackCtrl">
         <div class="feedback-button feedback-wrong" ng-class="{enabled: enabled}" ng-click="enabled ? feedback(false) : false">Wrong</div>
         <div class="feedback-button feedback-correct" ng-class="{enabled: enabled}" ng-click="enabled ? feedback(true) : false">Correct</div>
-    </div>
-    <div ng-controller="VocabularyCtrl" class="sections">
-        <ul>
-            <li ng-class="{current: currentSection === section}" ng-repeat="(section, words) in vocabulary"><a href="#" ng-click="selectSection(section)">{{ section }}</a></li>
-        </ul>
     </div>
     <div>
         <fs:column width="900" height="175" bind="results.facets.SelectionProbability" />
@@ -99,5 +128,7 @@ table thead th {
             </tbody>
         </table>
     </div>
+    </main>
+    <script type="text/javascript" src="vocabularydrill-ui.js"></script>
 </body>
 </html>
