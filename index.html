@@ -2,6 +2,7 @@
 <html ng-app="vocabularyDrillApp">
 <head>
 <meta http-equiv="content-type" value="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <script type="text/javascript" src="angular.min.js"></script>
 <script type="text/javascript" src="angular-resource.js"></script>
 <script type="text/javascript" src="vocabularydrill.js"></script>
@@ -15,7 +16,6 @@ body {
     font-size: 110%;
 }
 .card {
-    display: block;
     width: calc(100% - 20px);
     margin: 10px;
     height: 120px;
@@ -23,16 +23,15 @@ body {
     text-align: center;
     background-color: #ffff00;
     opacity: 0.1;
-    font-size: 38pt;
+    font-size: 50px;
 }
 .card.answer {
-    background-color: #44cc44;
+    background: #44cc44;
 }
 .card.enabled {
     opacity: 1.0;
 }
 .feedback-button {
-    display: block;
     float: left;
     width: calc(50% - 20px);
     margin: 10px;
@@ -41,11 +40,11 @@ body {
     opacity: 0.1;
 }
 .feedback-button.feedback-wrong {
-    background-color: #aa0010;
+    background: #aa0010;
     color: #ffffff;
 }
 .feedback-button.feedback-correct {
-    background-color: #00cc15;
+    background: #00cc15;
 }
 .feedback-button.enabled {
     opacity: 1.0;
@@ -57,6 +56,7 @@ aside {
 	left: -150px;
 	top: 0px;
 	transition: 1s;
+	z-index: 10;
 }
 aside.expanded {
 	transition: 1s;
@@ -66,17 +66,13 @@ aside a {
 	display: inline-block;
 	width: calc(100% - 70px);
 	color: #980000;
-	padding: 0.3em;
-	padding-left: 0.6em;
-	border-bottom: 0.5px solid #980000;
+	padding: 0.3em 0.3em 0.3em 0.6em;
+	border-bottom: 1px solid #980000;
     text-decoration: none;
-    position: relative;
-    left: 0;
-    top: 0;
     cursor: hand;
 }
 aside a.current, aside a:hover {
-    background-color: #980000;
+    background: #980000;
     color: #ffffff;
     transition: 1s;
 }
@@ -94,7 +90,7 @@ main {
 }
 body:after {
 	content: "";
-	dipslay: table;
+	display: table;
 	clear: both;
 }
 table thead th {
