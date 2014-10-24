@@ -66,6 +66,7 @@ aside a {
 	display: inline-block;
 	width: calc(100% - 70px);
 	color: #980000;
+	background: #ffffff;
 	padding: 0.3em 0.3em 0.3em 0.6em;
 	border-bottom: 1px solid #980000;
     text-decoration: none;
@@ -81,12 +82,11 @@ aside a.current, aside a:hover {
 	height: 20px;
 	background: #980000;
 	color: #ffffff;
-	padding: 15px;
+	padding: 5px;
 	position: absolute;
 	left: 150px;
 }
 main {
-	margin-top: 40px;
 }
 body:after {
 	content: "";
@@ -96,6 +96,12 @@ body:after {
 table thead th {
     text-align: left;
 }
+.title {
+	padding-left: 40px;
+	color: #980000;
+	width: 100%;
+	height: 20px;
+}
 </style>
 </head>
 <body ng-controller="SessionCtrl">
@@ -104,6 +110,7 @@ table thead th {
 		<a ng-class="{current: currentSection === section}" ng-repeat="(section, words) in vocabulary" href="#" ng-click="selectSection(section)">{{ section }}</a>
     </aside>
     <main>
+    <div class="title">{{ currentSection }}</div>
     <div ng-controller="FlashCardCtrl">
         <div class="card" ng-class="{answer: !showingQuestion, enabled: hasWord()}" ng-click="hasWord() ? pressedWord() : false">{{ word.word[show] }}</div>
     </div>

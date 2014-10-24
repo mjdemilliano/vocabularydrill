@@ -8,6 +8,10 @@ vocabularyDrillApp.controller('SessionCtrl', ['$scope', 'Feedback',
         $scope.word = undefined;
         $scope.showingAnswer = false;
         $scope.results = undefined;
+        
+        $scope.setCurrentSection = function(section) {
+        	$scope.currentSection = section;
+        };
 
         // Note: have to use a method here, because in a direct assignment only the local scope gets changed.
         $scope.setWords = function(words) {
@@ -91,7 +95,7 @@ vocabularyDrillApp.controller('VocabularyCtrl', ['$scope', 'Vocabulary',
         $scope.vocabulary = Vocabulary.query();
 
         $scope.selectSection = function(section) {
-            $scope.currentSection = section;
+            $scope.setCurrentSection(section);
             // Note: have to use a method here, because in a direct assignment only the local scope gets changed.
             $scope.setWords($scope.vocabulary[section]);
             $('aside').removeClass('expanded');
