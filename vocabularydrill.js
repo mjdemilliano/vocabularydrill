@@ -11,6 +11,7 @@ vocabularyDrillApp.controller('SessionCtrl', ['$scope', 'Feedback',
         
         $scope.setCurrentSection = function(section) {
         	$scope.currentSection = section;
+        	$scope.showingAnswer = false;
         };
 
         // Note: have to use a method here, because in a direct assignment only the local scope gets changed.
@@ -175,9 +176,7 @@ vocabularyDrillApp.controller('FeedbackCtrl', ['$scope', 'Feedback',
             $scope.$emit('feedback-recorded');
         }
         $scope.$watch('showingAnswer', function(showingAnswer) {
-            if (showingAnswer) {
-                $scope.enabled = true;
-            }
+            $scope.enabled = showingAnswer;
         });
     }
 ]);
