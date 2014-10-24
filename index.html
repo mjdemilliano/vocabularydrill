@@ -40,47 +40,52 @@ body {
     text-align: center;
     opacity: 0.1;
     border-radius: 8px;
+    cursor: pointer;
 }
 .feedback-button.feedback-wrong {
     background: #d69999;
-    border: 2px solid #980000;
+    border: 1px solid #980000;
     color: #980000;
 }
 .feedback-button.feedback-correct {
     background: #a6eead;
-    border: 2px solid #00cc15;
+    border: 1px solid #00cc15;
     color: #00cc15;
 }
 .feedback-button.answer-button {
 	background: #dddddd;
-	border: 2px solid #000000;
+	border: 1px solid #000000;
 	width: calc(100% - 24px);
 }
 .feedback-button.enabled {
     opacity: 1.0;
 }
 aside {
-	width: 200px;
 	padding: 0;
 	position: absolute;
-	left: -150px;
+	left: -267px;
 	top: 0px;
 	transition: 1s;
 	z-index: 10;
+}
+aside .linklist {
+	/*box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);*/
+	width: 100%;
 }
 aside.expanded {
 	transition: 1s;
 	left: 0;
 }
 aside a {
-	display: inline-block;
-	width: calc(100% - 70px);
+	display: block;
 	color: #980000;
+	width: 250px;
 	background: #ffffff;
 	padding: 0.3em 0.3em 0.3em 0.6em;
 	border-bottom: 1px solid #980000;
+	border-right: 1px solid #980000;
     text-decoration: none;
-    cursor: hand;
+    cursor: pointer;
 }
 aside a.current, aside a:hover {
     background: #980000;
@@ -89,12 +94,12 @@ aside a.current, aside a:hover {
 }
 .menutoggle {
 	width: 20px;
-	height: 20px;
+	height: 22px;
 	background: #980000;
 	color: #ffffff;
 	padding: 5px;
 	position: absolute;
-	left: 150px;
+	left: 266px;
 }
 table thead th {
     text-align: left;
@@ -104,12 +109,17 @@ table thead th {
 	color: #980000;
 	height: 20px;
 }
+.statistics {
+	margin-top: 150px;
+}
 </style>
 </head>
 <body ng-controller="SessionCtrl">
     <aside ng-controller="VocabularyCtrl" ng-class="{expanded: expanded}">
     	<a href="#" class="menutoggle" ng-click="toggle();">&lt;</a>
-		<a ng-class="{current: currentSection === section}" ng-repeat="(section, words) in vocabulary" href="#" ng-click="selectSection(section)">{{ section }}</a>
+    	<div class="linklist">
+			<a ng-class="{current: currentSection === section}" ng-repeat="(section, words) in vocabulary" href="#" ng-click="selectSection(section)">{{ section }}</a>
+		</div>
     </aside>
     <main>
     <div class="title">{{ currentSection }}</div>
@@ -124,7 +134,7 @@ table thead th {
     <!--<div>
         <fs:column width="900" height="175" bind="results.facets.SelectionProbability" />
     </div>
-    <div>
+    <div class="statistics">
         <table style="clear: both;" ng-if="words.length > 0">
             <thead>
                 <tr><th>Word</th><th># correct</th><th># wrong</th><th>Selection probability</th></tr>
