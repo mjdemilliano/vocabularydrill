@@ -21,7 +21,7 @@ body {
     height: 120px;
     padding: 10px 0px 10px 0px;
     text-align: center;
-    background-color: #ffff00;
+    background-color: #ffffff;
     opacity: 0.1;
     font-size: 50px;
 }
@@ -105,8 +105,8 @@ table thead th {
 </style>
 </head>
 <body ng-controller="SessionCtrl">
-    <aside ng-controller="VocabularyCtrl">
-    	<a href="#" class="menutoggle">&lt;</a>
+    <aside ng-controller="VocabularyCtrl" ng-class="{expanded: expanded}">
+    	<a href="#" class="menutoggle" ng-click="toggle();">&lt;</a>
 		<a ng-class="{current: currentSection === section}" ng-repeat="(section, words) in vocabulary" href="#" ng-click="selectSection(section)">{{ section }}</a>
     </aside>
     <main>
@@ -118,7 +118,7 @@ table thead th {
         <div class="feedback-button feedback-wrong" ng-class="{enabled: enabled}" ng-click="enabled ? feedback(false) : false">Wrong</div>
         <div class="feedback-button feedback-correct" ng-class="{enabled: enabled}" ng-click="enabled ? feedback(true) : false">Correct</div>
     </div>
-    <div>
+    <!--<div>
         <fs:column width="900" height="175" bind="results.facets.SelectionProbability" />
     </div>
     <div>
@@ -130,7 +130,7 @@ table thead th {
                 <tr ng-repeat="word in words | orderBy:'-selectionProbability'"><td>{{ word.word[0] }}</td><td>{{ word.correct }}</td><td>{{ word.wrong }}</td><td>{{ word.selectionProbability }}</td></tr>
             </tbody>
         </table>
-    </div>
+    </div>-->
     </main>
     <script type="text/javascript" src="vocabularydrill-ui.js"></script>
 </body>

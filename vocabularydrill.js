@@ -93,14 +93,19 @@ vocabularyDrillApp.controller('SessionCtrl', ['$scope', 'Feedback',
 vocabularyDrillApp.controller('VocabularyCtrl', ['$scope', 'Vocabulary',
     function($scope, Vocabulary) {
         $scope.vocabulary = Vocabulary.query();
+        $scope.expanded = true;
 
         $scope.selectSection = function(section) {
             $scope.setCurrentSection(section);
             // Note: have to use a method here, because in a direct assignment only the local scope gets changed.
             $scope.setWords($scope.vocabulary[section]);
-            $('aside').removeClass('expanded');
+            $scope.expanded = false;
         };
-    }
+        
+        $scope.toggle = function() {
+        	$scope.expanded = ! $scope.expanded;
+		};
+	}
 ]);
 
 vocabularyDrillApp.controller('FlashCardCtrl', ['$scope', '$timeout',
