@@ -24,27 +24,37 @@ body {
     background-color: #ffffff;
     opacity: 0.1;
     font-size: 50px;
+    border-radius: 8px;
 }
 .card.answer {
-    background: #44cc44;
+    background: #ffffff;
 }
 .card.enabled {
     opacity: 1.0;
 }
 .feedback-button {
     float: left;
-    width: calc(50% - 20px);
+    width: calc(50% - 24px);
     margin: 10px;
     padding: 20px 0px;
     text-align: center;
     opacity: 0.1;
+    border-radius: 8px;
 }
 .feedback-button.feedback-wrong {
-    background: #aa0010;
-    color: #ffffff;
+    background: #d69999;
+    border: 2px solid #980000;
+    color: #980000;
 }
 .feedback-button.feedback-correct {
-    background: #00cc15;
+    background: #a6eead;
+    border: 2px solid #00cc15;
+    color: #00cc15;
+}
+.feedback-button.answer-button {
+	background: #b2ffb2;
+	border: 2px solid #66ff66;
+	width: calc(100% - 20px);
 }
 .feedback-button.enabled {
     opacity: 1.0;
@@ -112,11 +122,12 @@ table thead th {
     <main>
     <div class="title">{{ currentSection }}</div>
     <div ng-controller="FlashCardCtrl">
-        <div class="card" ng-class="{answer: !showingQuestion, enabled: hasWord()}" ng-click="hasWord() ? pressedWord() : false">{{ word.word[show] }}</div>
-    </div>
+        <div class="card" ng-class="{answer: !showingQuestion, enabled: hasWord()}">{{ word.word[show] }}</div>
+        <div class="feedback-button answer-button" ng-class="{enabled: hasWord()}" ng-if="hasWord() && showingQuestion" ng-click="hasWord() ? pressedWord() : false">Show answer</div>
+    </div>    
     <div ng-controller="FeedbackCtrl">
-        <div class="feedback-button feedback-wrong" ng-class="{enabled: enabled}" ng-click="enabled ? feedback(false) : false">Wrong</div>
-        <div class="feedback-button feedback-correct" ng-class="{enabled: enabled}" ng-click="enabled ? feedback(true) : false">Correct</div>
+        <div class="feedback-button feedback-wrong" ng-if="enabled" ng-class="{enabled: enabled}" ng-click="enabled ? feedback(false) : false">Wrong</div>
+        <div class="feedback-button feedback-correct" ng-if="enabled" ng-class="{enabled: enabled}" ng-click="enabled ? feedback(true) : false">Correct</div>
     </div>
     <!--<div>
         <fs:column width="900" height="175" bind="results.facets.SelectionProbability" />
@@ -132,6 +143,5 @@ table thead th {
         </table>
     </div>-->
     </main>
-    <script type="text/javascript" src="vocabularydrill-ui.js"></script>
 </body>
 </html>
