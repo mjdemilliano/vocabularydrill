@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="shortcut icon" type="image/png" href="russianflag.png">
 <link rel="apple-touch-icon" href="russianflagapple.png" />
+<link rel="stylesheet" type="text/css" href="vocabularydrill.css" />
 <script type="text/javascript" src="angular.min.js"></script>
 <script type="text/javascript" src="angular-resource.js"></script>
 <script type="text/javascript" src="vocabularydrill.js"></script>
@@ -12,109 +13,6 @@
 <script type="text/javascript" src="ng-FitText.js"></script>
 <script type="text/javascript" src="d3.min.js"></script>
 <script type="text/javascript" src="dangle.min.js"></script>
-<style type="text/css">
-body {
-    font-family: sans-serif;
-    font-size: 110%;
-}
-.card {
-    width: calc(100% - 20px);
-    margin: 10px;
-    height: 200px;
-    padding: 10px 0px 10px 0px;
-    text-align: center;
-    background-color: #ffffff;
-    opacity: 0.1;
-    font-size: 30px;
-    border-radius: 8px;
-}
-.card.answer {
-    background: #ffffff;
-}
-.card.enabled {
-    opacity: 1.0;
-}
-.feedback-button {
-    float: left;
-    width: calc(50% - 24px);
-    margin: 10px;
-    padding: 20px 0px;
-    text-align: center;
-    opacity: 0.1;
-    border-radius: 8px;
-    cursor: pointer;
-}
-.feedback-button.feedback-wrong {
-    background: #d69999;
-    border: 1px solid #980000;
-    color: #980000;
-}
-.feedback-button.feedback-correct {
-    background: #a6eead;
-    border: 1px solid #00cc15;
-    color: #00cc15;
-}
-.feedback-button.answer-button {
-	background: #dddddd;
-	border: 1px solid #000000;
-	width: calc(100% - 24px);
-}
-.feedback-button.enabled {
-    opacity: 1.0;
-}
-aside {
-	padding: 0;
-	position: absolute;
-	left: -267px;
-	top: 0px;
-	transition: 1s;
-	z-index: 10;
-}
-aside .linklist {
-	/*box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);*/
-	width: 100%;
-}
-aside.expanded {
-	transition: 1s;
-	left: 0;
-}
-aside a {
-	display: block;
-	color: #980000;
-	width: 250px;
-	background: #ffffff;
-	padding: 0.3em 0.3em 0.3em 0.6em;
-	border-bottom: 1px solid #980000;
-	border-right: 1px solid #980000;
-    text-decoration: none;
-    cursor: pointer;
-}
-aside a.current, aside a:hover {
-    background: #980000;
-    color: #ffffff;
-    transition: 1s;
-}
-.menutoggle {
-	width: 20px;
-	height: 22px;
-	background: #980000;
-	color: #ffffff;
-	padding: 5px;
-	position: absolute;
-	left: 266px;
-}
-table thead th {
-    text-align: left;
-}
-.title {
-	padding-left: 40px;
-	color: #980000;
-	height: 20px;
-}
-.statistics {
-	margin-top: 150px;
-}
-</style>
 </head>
 <body ng-controller="SessionCtrl">
     <aside ng-controller="VocabularyCtrl" ng-class="{expanded: expanded}">
