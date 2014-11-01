@@ -91,40 +91,11 @@ vocabularyDrillApp.controller('SessionCtrl', ['$scope', 'Feedback',
     }
 ]);
 
-vocabularyDrillApp.controller('VocabularyCtrl', ['$scope', 'Vocabulary', 'Feedback',
-    function($scope, Vocabulary, Feedback) {
-        $scope.vocabulary = Vocabulary.query(function() {
-			// Get history for each lesson.
-			angular.forEach($scope.vocabulary, function(words, lesson) {
-				var runningStatus = {
-					numberOfWords: 0,
-					numberCorrect: 0,
-					numberWrong: 0,
-					numberOfRecords: 0,
-					score: 0
-				};
-				var history, timesCorrect;
-				angular.forEach($scope.vocabulary[lesson], function(wordPair) {
-					history = Feedback.historyForWord(wordPair[0]);
-					timesCorrect = history.filter(function(wordHistory) {
-						return wordHistory.wasCorrect;
-					}).length;
-					runningStatus.numberOfWords += 1;
-					runningStatus.numberOfRecords += history.length;
-					runningStatus.numberCorrect += timesCorrect;
-					runningStatus.numberWrong += history.length - timesCorrect;
-				});
-				/*                 /   #correct     #tries   \
-				 * score = minimum |  ---------- , --------  |
-				 *                 \    #tries      #words   /
-				 */
-				var score1 = runningStatus.numberOfRecords > 0 ? 100.0 * runningStatus.numberCorrect / runningStatus.numberOfRecords : 0;
-				var score2 = runningStatus.numberOfWords > 0 ? 100.0 * runningStatus.numberOfRecords / runningStatus.numberOfWords : 0;
-				runningStatus.score = Math.min(score1, score2);
-				$scope.vocabulary[lesson].status = runningStatus;
-			});
-		});
-        $scope.expanded = true;
+vocabularyDrillApp.controller('VocabularyCtrl', ['$scope', 'Vocabulary', 'Feedback', 'VocabularyProgress',
+    function($scope, Vocabulary, Feedback, VocabularyProgress) {
+        $scope.vocabulary = Vocabulary.query();
+        $scope.vocabularyProgress = VocabularyProgress.lessons;
+		$scope.expanded = true;
        
         $scope.selectSection = function(section) {
             $scope.setCurrentSection(section);
@@ -219,6 +190,49 @@ vocabularyServices.factory('Vocabulary', ['$resource',
             query: {method: 'GET'}
         });
     }
+]);
+
+vocabularyServices.factory('VocabularyProgress', ['Vocabulary', 'Feedback',
+	function($vocabulary, $feedback) {
+		var lessons = [];
+		$vocabulary.query(function(vocabulary) {
+			angular.forEach(vocabulary, function(words, lesson) {
+				// Get history for each lesson.
+				var runningStatus = {
+					numberOfWords: 0,
+					numberCorrect: 0,
+					numberWrong: 0,
+					numberOfRecords: 0,
+					score: 0
+				};
+				var history, timesCorrect;
+				angular.forEach(words, function(wordPair) {
+					history = $feedback.historyForWord(wordPair[0]);
+					timesCorrect = history.filter(function(wordHistory) {
+						return wordHistory.wasCorrect;
+					}).length;
+					runningStatus.numberOfWords += 1;
+					runningStatus.numberOfRecords += history.length;
+					runningStatus.numberCorrect += timesCorrect;
+					runningStatus.numberWrong += history.length - timesCorrect;
+				});
+				/*                 /   #correct     #tries   \
+				 * score = minimum |  ---------- , --------  |
+				 *                 \    #tries      #words   /
+				 */
+				var score1 = runningStatus.numberOfRecords > 0 ? 100.0 * runningStatus.numberCorrect / runningStatus.numberOfRecords : 0;
+				var score2 = runningStatus.numberOfWords > 0 ? 100.0 * runningStatus.numberOfRecords / runningStatus.numberOfWords : 0;
+				runningStatus.score = Math.min(score1, score2);
+				lessons[lesson] = {
+					name: lesson,
+					status: runningStatus
+				};
+			});
+		});
+		return {
+			lessons: lessons
+		};
+	}
 ]);
 
 vocabularyServices.factory('Feedback',

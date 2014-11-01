@@ -22,7 +22,7 @@
 				ng-repeat="(section, words) in vocabulary"
 				href="#"
 				ng-click="selectSection(section)">
-				{{ section }} ({{ vocabulary[section].status.score.toFixed(0) }} %)
+				{{ section }} ({{ vocabularyProgress[section].status.score.toFixed(0) }} %)
 			</a>
 		</div>
     </aside>
