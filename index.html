@@ -18,7 +18,12 @@
     <aside ng-controller="VocabularyCtrl" ng-class="{expanded: expanded}">
     	<a href="#" class="menutoggle" ng-click="toggle();">&lt;</a>
     	<div class="linklist">
-			<a ng-class="{current: currentSection === section}" ng-repeat="(section, words) in vocabulary" href="#" ng-click="selectSection(section)">{{ section }}</a>
+			<a ng-class="{current: currentSection === section}"
+				ng-repeat="(section, words) in vocabulary"
+				href="#"
+				ng-click="selectSection(section)">
+				{{ section }} ({{ vocabulary[section].status.score.toFixed(0) }} %)
+			</a>
 		</div>
     </aside>
     <main>

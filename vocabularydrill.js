@@ -91,11 +91,41 @@ vocabularyDrillApp.controller('SessionCtrl', ['$scope', 'Feedback',
     }
 ]);
 
-vocabularyDrillApp.controller('VocabularyCtrl', ['$scope', 'Vocabulary',
-    function($scope, Vocabulary) {
-        $scope.vocabulary = Vocabulary.query();
+vocabularyDrillApp.controller('VocabularyCtrl', ['$scope', 'Vocabulary', 'Feedback',
+    function($scope, Vocabulary, Feedback) {
+        $scope.vocabulary = Vocabulary.query(function() {
+			// Get history for each lesson.
+			angular.forEach($scope.vocabulary, function(words, lesson) {
+				var runningStatus = {
+					numberOfWords: 0,
+					numberCorrect: 0,
+					numberWrong: 0,
+					numberOfRecords: 0,
+					score: 0
+				};
+				var history, timesCorrect;
+				angular.forEach($scope.vocabulary[lesson], function(wordPair) {
+					history = Feedback.historyForWord(wordPair[0]);
+					timesCorrect = history.filter(function(wordHistory) {
+						return wordHistory.wasCorrect;
+					}).length;
+					runningStatus.numberOfWords += 1;
+					runningStatus.numberOfRecords += history.length;
+					runningStatus.numberCorrect += timesCorrect;
+					runningStatus.numberWrong += history.length - timesCorrect;
+				});
+				/*                 /   #correct     #tries   \
+				 * score = minimum |  ---------- , --------  |
+				 *                 \    #tries      #words   /
+				 */
+				var score1 = runningStatus.numberOfRecords > 0 ? 100.0 * runningStatus.numberCorrect / runningStatus.numberOfRecords : 0;
+				var score2 = runningStatus.numberOfWords > 0 ? 100.0 * runningStatus.numberOfRecords / runningStatus.numberOfWords : 0;
+				runningStatus.score = Math.min(score1, score2);
+				$scope.vocabulary[lesson].status = runningStatus;
+			});
+		});
         $scope.expanded = true;
-
+       
         $scope.selectSection = function(section) {
             $scope.setCurrentSection(section);
             // Note: have to use a method here, because in a direct assignment only the local scope gets changed.
