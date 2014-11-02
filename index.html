@@ -27,7 +27,11 @@
 		</div>
     </aside>
     <main>
-    <div class="title">{{ currentSection }}</div>
+    <div class="title">{{ currentSection }} (
+    	#: {{ progress.numberOfWords }} |
+    	#correct: {{ progress.numberCorrect }} |
+    	#wrong: {{ progress.numberWrong }} |
+    	score: {{ progress.score.toFixed(0) }})</div>
     <div ng-controller="FlashCardCtrl">
         <div class="card" ng-class="{answer: !showingQuestion, enabled: hasWord()}">{{ word.word[show] }}</div>
         <div class="feedback-button answer-button" ng-class="{enabled: hasWord()}" ng-if="hasWord() && showingQuestion" ng-click="hasWord() ? pressedWord() : false">Show answer</div>

@@ -1,17 +1,19 @@
 var vocabularyDrillApp = angular.module('vocabularyDrillApp', ['vocabularyServices', 'ngFitText', 'dangle']);
 var DELAY_ADVANCE = 1000;
 
-vocabularyDrillApp.controller('SessionCtrl', ['$scope', 'Feedback',
-    function($scope, Feedback) {
+vocabularyDrillApp.controller('SessionCtrl', ['$scope', 'Feedback', 'VocabularyProgress',
+    function($scope, Feedback, VocabularyProgress) {
         $scope.currentSection = '';
         $scope.words = [];
         $scope.word = undefined;
         $scope.showingAnswer = false;
         $scope.results = undefined;
+        $scope.progress = undefined;
         
         $scope.setCurrentSection = function(section) {
         	$scope.currentSection = section;
         	$scope.showingAnswer = false;
+        	$scope.progress = VocabularyProgress.lessons[$scope.currentSection].status;
         };
 
         // Note: have to use a method here, because in a direct assignment only the local scope gets changed.
@@ -161,8 +163,8 @@ vocabularyDrillApp.controller('FlashCardCtrl', ['$scope', '$timeout',
     }
 ]);
 
-vocabularyDrillApp.controller('FeedbackCtrl', ['$scope', 'Feedback',
-    function FeedbackCtrl($scope, Feedback) {
+vocabularyDrillApp.controller('FeedbackCtrl', ['$scope', 'Feedback', 'VocabularyProgress',
+    function FeedbackCtrl($scope, Feedback, VocabularyProgress) {
         $scope.enabled = false;
         $scope.feedback = function(wasCorrect) {
             $scope.enabled = false;
@@ -172,6 +174,7 @@ vocabularyDrillApp.controller('FeedbackCtrl', ['$scope', 'Feedback',
             } else {
                 $scope.word.wrong += 1;
             }
+            VocabularyProgress.lessons[$scope.currentSection].status.updateWithResult(1, wasCorrect ? 1 : 0);
             $scope.updateProbabilities();
             $scope.updateFacets();
             $scope.$emit('feedback-recorded');
@@ -194,7 +197,9 @@ vocabularyServices.factory('Vocabulary', ['$resource',
 
 vocabularyServices.factory('VocabularyProgress', ['Vocabulary', 'Feedback',
 	function($vocabulary, $feedback) {
-		var lessons = [];
+		var my = {
+			lessons: []
+		};
 		$vocabulary.query(function(vocabulary) {
 			angular.forEach(vocabulary, function(words, lesson) {
 				// Get history for each lesson.
@@ -219,7 +224,6 @@ vocabularyServices.factory('VocabularyProgress', ['Vocabulary', 'Feedback',
 						var score1 = this.numberOfRecords > 0 ? 100.0 * this.numberCorrect / this.numberOfRecords : 0;
 						var score2 = this.numberOfWords > 0 ? 100.0 * this.numberOfRecords / this.numberOfWords : 0;
 						this.score = Math.min(score1, score2);
-						console.log(this);
 					}
 				};
 				angular.forEach(words, function(wordPair) {
@@ -228,17 +232,15 @@ vocabularyServices.factory('VocabularyProgress', ['Vocabulary', 'Feedback',
 						return wordHistory.wasCorrect;
 					}).length;
 					var numberOfTries = history.length;
-					runningStatus.updateWithResult(numberOfTries, timesCorrect);
+						runningStatus.updateWithResult(numberOfTries, timesCorrect);
 				});
-				lessons[lesson] = {
+				my.lessons[lesson] = {
 					name: lesson,
 					status: runningStatus
 				};				
 			});
 		});
-		return {
-			lessons: lessons
-		};
+		return my;
 	}
 ]);
 
