@@ -217,6 +217,7 @@ vocabularyServices.factory('VocabularyProgress', ['Vocabulary', 'Feedback',
 					updateWithResult: function(numberOfTries, timesCorrect) {
 						this.numberOfRecords += numberOfTries;
 						this.numberCorrect += timesCorrect;
+						this.numberWrong += (numberOfTries - timesCorrect);
 						/*                 /   #correct     #tries   \
 						 * score = minimum |  ---------- , --------  |
 						 *                 \    #tries      #words   /
