@@ -198,35 +198,42 @@ vocabularyServices.factory('VocabularyProgress', ['Vocabulary', 'Feedback',
 		$vocabulary.query(function(vocabulary) {
 			angular.forEach(vocabulary, function(words, lesson) {
 				// Get history for each lesson.
+				// The $resource class has additional properties starting with "$", so we need
+				// to ignore those.
+				if (lesson[0] === '$') {
+					return;
+				}
 				var runningStatus = {
-					numberOfWords: 0,
+					numberOfWords: words.length,
 					numberCorrect: 0,
 					numberWrong: 0,
 					numberOfRecords: 0,
-					score: 0
+					score: 0,
+					updateWithResult: function(numberOfTries, timesCorrect) {
+						this.numberOfRecords += numberOfTries;
+						this.numberCorrect += timesCorrect;
+						/*                 /   #correct     #tries   \
+						 * score = minimum |  ---------- , --------  |
+						 *                 \    #tries      #words   /
+						 */
+						var score1 = this.numberOfRecords > 0 ? 100.0 * this.numberCorrect / this.numberOfRecords : 0;
+						var score2 = this.numberOfWords > 0 ? 100.0 * this.numberOfRecords / this.numberOfWords : 0;
+						this.score = Math.min(score1, score2);
+						console.log(this);
+					}
 				};
-				var history, timesCorrect;
 				angular.forEach(words, function(wordPair) {
-					history = $feedback.historyForWord(wordPair[0]);
-					timesCorrect = history.filter(function(wordHistory) {
+					var history = $feedback.historyForWord(wordPair[0]);
+					var timesCorrect = history.filter(function(wordHistory) {
 						return wordHistory.wasCorrect;
 					}).length;
-					runningStatus.numberOfWords += 1;
-					runningStatus.numberOfRecords += history.length;
-					runningStatus.numberCorrect += timesCorrect;
-					runningStatus.numberWrong += history.length - timesCorrect;
+					var numberOfTries = history.length;
+					runningStatus.updateWithResult(numberOfTries, timesCorrect);
 				});
-				/*                 /   #correct     #tries   \
-				 * score = minimum |  ---------- , --------  |
-				 *                 \    #tries      #words   /
-				 */
-				var score1 = runningStatus.numberOfRecords > 0 ? 100.0 * runningStatus.numberCorrect / runningStatus.numberOfRecords : 0;
-				var score2 = runningStatus.numberOfWords > 0 ? 100.0 * runningStatus.numberOfRecords / runningStatus.numberOfWords : 0;
-				runningStatus.score = Math.min(score1, score2);
 				lessons[lesson] = {
 					name: lesson,
 					status: runningStatus
-				};
+				};				
 			});
 		});
 		return {
