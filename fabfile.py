@@ -12,6 +12,7 @@ FTP_SETTINGS = {
         'index.html',
         'woordenlijst.json',
         'vocabularydrill.js',
+        'vocabularydrill.css',
     ]
 }
 
