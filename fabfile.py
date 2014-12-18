@@ -20,6 +20,7 @@ FTP_SETTINGS = {
 def generate_json():
     with open(output_json, 'w') as outputFile:
         tools.ods2json.generateJSONForODSFile(input_ods, outputFile)
+    print 'Updated ' + output_json
 
 @task
 def update():
